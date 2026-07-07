@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: investment-research-api
+  
+  # MongoDB Configuration
+  data:
+    mongodb:
+      uri: mongodb+srv://investa2026:investor@2003@cluster0.mongodb.net/investa?retryWrites=true&w=majority
+      auto-index-creation: true
+  
+  # Server Configuration
+  webflux:
+    static-path-pattern: /static/**
+
+server:
+  port: ${PORT:${SERVER_PORT:8080}}
+  servlet:
+    context-path: /
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.investa: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.data.mongodb: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Application Configuration
+app:
+  name: Investa
+  version: 1.0.0
+  cors:
+    allowed-origins: "http://localhost:5173,http://localhost:3000,https://*.vercel.app"
+    allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+    allowed-headers: "Content-Type,Authorization,x-user-id"
+    allow-credentials: true
+    max-age: 3600
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-secret-key-change-this-in-production-minimum-256-bits}
+  expiration: ${JWT_EXPIRATION:86400000}  # 24 hours in milliseconds
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 days

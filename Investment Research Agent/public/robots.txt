@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /auth
+Disallow: /profile
+Disallow: /settings
+Disallow: /portfolio
+Disallow: /watchlist
+Disallow: /alerts
+Disallow: /reports

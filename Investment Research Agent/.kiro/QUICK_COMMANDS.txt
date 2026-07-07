@@ -1,0 +1,346 @@
+================================================================================
+                    QUICK COMMAND REFERENCE
+================================================================================
+
+STARTING THE APPLICATION
+────────────────────────────────────────────────────────────────────────────
+
+Terminal 1 - START BACKEND:
+    cd springboot-backend
+    mvn spring-boot:run
+
+Terminal 2 - START FRONTEND:
+    cd "Investment Research Agent"
+    npm run dev
+
+Then open in browser:
+    http://localhost:5173/auth
+
+================================================================================
+
+LOGIN CREDENTIALS
+────────────────────────────────────────────────────────────────────────────
+
+Demo Account (Already registered):
+    Email: demo@investa.io
+    Password: demo1234
+
+Or create new account:
+    Click "Sign up" on login page
+    Fill form with name/email/password
+    Click "Create Account"
+
+================================================================================
+
+NAVIGATION AFTER LOGIN
+────────────────────────────────────────────────────────────────────────────
+
+Direct URLs:
+
+Dashboard:
+    http://localhost:5173/dashboard
+
+Stocks:
+    http://localhost:5173/stocks
+
+Screener:
+    http://localhost:5173/screener
+
+Portfolio:
+    http://localhost:5173/portfolio
+
+Watchlist:
+    http://localhost:5173/watchlist
+
+Alerts:
+    http://localhost:5173/alerts
+
+AI Research:
+    http://localhost:5173/ai-research
+
+News:
+    http://localhost:5173/news
+
+Reports:
+    http://localhost:5173/reports
+
+Settings:
+    http://localhost:5173/settings
+
+================================================================================
+
+SCREENER PAGE TESTING
+────────────────────────────────────────────────────────────────────────────
+
+What to test:
+
+1. Sector filter (dropdown)
+   - Select different sectors
+   - Results update
+
+2. Price range (min/max)
+   - Enter Min: 100, Max: 300
+   - Results filter correctly
+
+3. Market Cap filter
+   - Enter minimum in billions
+   - Only large cap stocks show
+
+4. Volume filter
+   - Set minimum volume
+   - High-volume stocks show
+
+5. P/E Ratio filter
+   - Set maximum P/E
+   - Low P/E value stocks show
+
+6. Dividend Yield filter
+   - Set minimum dividend %
+   - Dividend-paying stocks show
+
+7. 52-week high checkbox
+   - Toggle checkbox
+   - Stocks near highs show
+
+8. Reset button
+   - Click "Reset"
+   - All filters clear
+   - All stocks show
+
+9. Results counter
+   - Shows number of results
+   - Updates when filters change
+
+10. Click stock symbols
+    - Navigate to stock detail page
+    - Price chart shows
+    - Company info shows
+
+================================================================================
+
+SETTINGS PAGE TESTING
+────────────────────────────────────────────────────────────────────────────
+
+What to test:
+
+1. Dark/Light Mode:
+   - Click "Dark" button → dark mode
+   - Click "Light" button → light mode
+   - Persists after refresh
+
+2. Language:
+   - Select language from dropdown
+   - Options: English (US), English (UK), Hindi, Spanish, German
+   - "Save Changes" button appears
+
+3. Currency:
+   - Select currency: USD, INR, EUR, GBP
+   - "Save Changes" button appears
+   - Change is unsaved until you click Save
+
+4. Notifications:
+   - Check/uncheck Email, Push, Alerts
+   - "Save Changes" button appears
+   - Settings persist after save
+
+5. Security:
+   - Click "Change password" button
+   - Click "Enable 2FA" button
+   - Toast notifications appear
+
+6. Save Changes:
+   - Make any change
+   - "Save Changes" button appears at bottom
+   - Click it
+   - Loading spinner shows
+   - Success toast appears
+   - Refresh page (F5) to verify persistence
+
+================================================================================
+
+TROUBLESHOOTING COMMANDS
+────────────────────────────────────────────────────────────────────────────
+
+Clear cache and rebuild:
+    cd "Investment Research Agent"
+    rm -rf node_modules dist .next
+    npm install
+    npm run build
+    npm run dev
+
+Kill process on port 5173 (frontend):
+    # Find process
+    netstat -ano | findstr :5173
+    # Kill by PID (replace XXXX with PID)
+    taskkill /PID XXXX /F
+
+Kill process on port 8080 (backend):
+    # Find process
+    netstat -ano | findstr :8080
+    # Kill by PID (replace XXXX with PID)
+    taskkill /PID XXXX /F
+
+Clean build frontend:
+    cd "Investment Research Agent"
+    npm run build
+
+Check frontend errors:
+    npm run dev
+    # Open browser F12 → Console tab
+    # Look for red errors
+
+Check backend logs:
+    # Look at Maven terminal output
+    # Should see "Tomcat started on port(s): 8080"
+    # MongoDB connection messages
+
+Reset database (MongoDB):
+    # Clear users collection to reset accounts
+    # Go to MongoDB Atlas → Collections → Delete all documents
+
+================================================================================
+
+ENVIRONMENT VARIABLES
+────────────────────────────────────────────────────────────────────────────
+
+Frontend (.env file in "Investment Research Agent"):
+    VITE_API_BASE_URL=http://localhost:8080/api
+
+Backend (.env file in springboot-backend):
+    MONGODB_URI=mongodb+srv://investa2026:investor@2003@cluster0.mongodb.net/investa
+
+Note: All API keys already configured
+
+================================================================================
+
+TESTING FEATURES IN ORDER
+────────────────────────────────────────────────────────────────────────────
+
+1. Login:
+   Go to http://localhost:5173/auth
+   Enter: demo@investa.io / demo1234
+   Should redirect to dashboard
+
+2. Dashboard:
+   Should show market data
+   Charts load
+   News section shows
+
+3. Screener:
+   Click "Screener" in sidebar
+   See stock table
+   Try filters
+   Verify filter works
+
+4. Settings:
+   Click Settings icon (⚙️) in sidebar
+   Change language to "हिन्दी (Hindi)"
+   Change currency to "INR — Indian Rupee"
+   Click "Save Changes"
+   Verify toast notification
+   Refresh page (F5)
+   Changes should persist
+
+5. Other Pages:
+   Test all sidebar links:
+   - Stocks
+   - Portfolio
+   - Watchlist
+   - Alerts
+   - AI Research
+   - News
+   - Reports
+
+================================================================================
+
+DEVELOPER TOOLS
+────────────────────────────────────────────────────────────────────────────
+
+Open Browser Developer Tools:
+    F12
+
+Console tab (debug):
+    Check for JavaScript errors
+    Type commands to test
+
+Network tab (API calls):
+    See all HTTP requests
+    Check status codes (200 = OK)
+    See response data
+
+Elements tab (HTML):
+    Inspect page structure
+    Check CSS applied
+    Debug layout issues
+
+Performance tab:
+    Check page load time
+    Find slow components
+    Optimize if needed
+
+================================================================================
+
+USEFUL KEYBOARD SHORTCUTS
+────────────────────────────────────────────────────────────────────────────
+
+F12:
+    Toggle Developer Tools
+
+Ctrl+Shift+R:
+    Hard refresh (clear cache)
+
+Ctrl+Shift+Delete:
+    Open clear browser cache dialog
+
+F5:
+    Soft refresh page
+
+Ctrl+L:
+    Focus address bar
+
+Ctrl+K / Cmd+K:
+    Search/command palette in most apps
+
+================================================================================
+
+FINAL CHECKLIST
+────────────────────────────────────────────────────────────────────────────
+
+Before testing:
+
+[ ] Backend running (mvn spring-boot:run)
+[ ] Frontend running (npm run dev)
+[ ] Can access http://localhost:5173/auth
+[ ] Can login with demo@investa.io / demo1234
+[ ] Can see dashboard
+
+Testing Screener:
+
+[ ] Click "Screener" in sidebar
+[ ] See stock table
+[ ] Try changing sector
+[ ] Try entering price range
+[ ] Try clicking stock symbol
+[ ] Click "Reset" button
+
+Testing Settings:
+
+[ ] Click Settings icon
+[ ] See all settings sections
+[ ] Change currency to INR
+[ ] See "Save Changes" button
+[ ] Click "Save Changes"
+[ ] See success toast
+[ ] Refresh page (F5)
+[ ] Currency still shows INR
+
+If all pass: ✅ Everything working correctly!
+
+================================================================================
+
+Need more help? Check:
+    .kiro/SCREENER_SETTINGS_FIX.md - Full troubleshooting guide
+    .kiro/README.md - Documentation index
+    Console errors (F12) - Specific error messages
+
+================================================================================

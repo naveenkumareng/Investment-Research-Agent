@@ -1,0 +1,324 @@
+================================================================================
+INVESTMENT RESEARCH AGENT - COMMAND REFERENCE
+================================================================================
+
+QUICK START (Copy & Paste These Commands)
+
+================================================================================
+TERMINAL 1 - START BACKEND
+================================================================================
+
+cd springboot-backend
+mvn spring-boot:run
+
+Expected output:
+  Tomcat started on port(s): 8080
+  Started InvestaApplication
+
+Keep this running. Opens on: http://localhost:8080
+
+
+================================================================================
+TERMINAL 2 - START FRONTEND (NEW TERMINAL)
+================================================================================
+
+cd "Investment Research Agent"
+npm run dev
+
+Expected output:
+  VITE v5.0.0  ready in XXX ms
+  ➜  Local:   http://localhost:5173/
+
+Keep this running. Opens on: http://localhost:5173
+
+
+================================================================================
+BROWSER - OPEN AND LOGIN
+================================================================================
+
+1. Go to: http://localhost:5173/
+2. Login with:
+   Email: demo@investa.io
+   Password: demo1234
+
+Or create new account:
+   Click "Sign up" → Fill form → Click "Create Account"
+
+
+================================================================================
+AFTER LOGIN - NAVIGATE TO PAGES
+================================================================================
+
+✅ Dashboard:
+   http://localhost:5173/dashboard
+
+✅ Screener (Stock Filters):
+   http://localhost:5173/screener
+   Or click "Screener" in sidebar menu
+
+✅ Settings (Theme, Language, Currency):
+   http://localhost:5173/settings
+   Or click Settings icon (⚙️) in topbar
+
+✅ Reports:
+   http://localhost:5173/reports
+
+✅ AI Research:
+   http://localhost:5173/ai
+
+✅ News:
+   http://localhost:5173/news
+
+✅ Alerts:
+   http://localhost:5173/alerts
+
+
+================================================================================
+COMMON OPERATIONS
+================================================================================
+
+BUILD FRONTEND (Production):
+  cd "Investment Research Agent"
+  npm run build
+
+BUILD BACKEND (Production):
+  cd springboot-backend
+  mvn clean package
+
+LINT FRONTEND:
+  cd "Investment Research Agent"
+  npm run lint
+
+FORMAT FRONTEND:
+  cd "Investment Research Agent"
+  npm run format
+
+RESTART FRONTEND DEV SERVER (to reload .env):
+  cd "Investment Research Agent"
+  npm run dev
+  (Press Ctrl+C to stop, then run the command again)
+
+CLEAN FRONTEND CACHE:
+  cd "Investment Research Agent"
+  rm -rf node_modules dist
+  npm install
+
+CLEAN BACKEND CACHE:
+  cd springboot-backend
+  mvn clean
+
+
+================================================================================
+TESTING & VERIFICATION
+================================================================================
+
+VERIFY FRONTEND BUILD:
+  cd "Investment Research Agent"
+  npm run build
+  Expected: EXIT CODE 0, dist/ folder created
+
+VERIFY BACKEND BUILD:
+  cd springboot-backend
+  mvn clean package -DskipTests
+  Expected: BUILD SUCCESS
+
+CHECK RUNNING PORTS:
+  Windows: netstat -ano | findstr :8080
+  Windows: netstat -ano | findstr :5173
+  Mac/Linux: lsof -i :8080
+  Mac/Linux: lsof -i :5173
+
+TEST SCREENER FILTERS:
+  1. Go to http://localhost:5173/screener (after login)
+  2. Change filters:
+     - Sector dropdown
+     - Price range (Min/Max)
+     - Market cap
+     - Volume
+     - P/E ratio
+     - Dividend yield
+     - 52-week high checkbox
+  3. See results update in real-time
+  4. Click stock symbols to view details
+
+TEST SETTINGS PERSISTENCE:
+  1. Go to http://localhost:5173/settings (after login)
+  2. Change a setting (e.g., toggle dark mode)
+  3. Click "Save Changes" button
+  4. Wait for success toast notification
+  5. Refresh page (F5)
+  6. Verify change persists
+
+
+================================================================================
+TROUBLESHOOTING COMMANDS
+================================================================================
+
+HARD REFRESH BROWSER (clears cache):
+  Windows: Ctrl+Shift+R
+  Mac: Cmd+Shift+R
+
+CHECK BROWSER CONSOLE FOR ERRORS:
+  Windows: F12
+  Mac: Cmd+Option+I
+  Look for red error messages in Console tab
+
+CHECK NETWORK REQUESTS:
+  F12 → Network tab → Look for red/failed requests
+
+CLEAR BROWSER CACHE:
+  F12 → Application → Storage → Clear Site Data
+
+RESTART EVERYTHING:
+  1. Stop Terminal 1 (Ctrl+C)
+  2. Stop Terminal 2 (Ctrl+C)
+  3. Close browser tabs
+  4. Start Terminal 1: cd springboot-backend && mvn spring-boot:run
+  5. Start Terminal 2: cd "Investment Research Agent" && npm run dev
+  6. Open http://localhost:5173/
+
+KILL PROCESS ON PORT (if stuck):
+  Windows 8080:
+    netstat -ano | findstr :8080
+    taskkill /PID <PID> /F
+  
+  Windows 5173:
+    netstat -ano | findstr :5173
+    taskkill /PID <PID> /F
+
+
+================================================================================
+ENVIRONMENT VARIABLES (.env)
+================================================================================
+
+All API keys configured in: Investment Research Agent/.env
+
+Keys (all configured ✅):
+  - VITE_GROK_API_KEY (Grok/xAI)
+  - VITE_FINNHUB_API_KEY (Stock data)
+  - VITE_TWELVEDATA_API_KEY (Market data)
+  - VITE_POLYGON_API_KEY (Market data)
+  - VITE_NEWS_API_KEY (News)
+
+If API keys not working:
+  1. Restart frontend dev server (Ctrl+C then npm run dev)
+  2. Wait for "VITE ready" message
+  3. Try API calls again
+
+
+================================================================================
+PROJECT STRUCTURE
+================================================================================
+
+Backend (Spring Boot):
+  springboot-backend/
+  ├── src/main/java/com/investa/
+  │   ├── controller/AuthController.java
+  │   ├── service/AuthService.java
+  │   ├── security/JwtUtil.java
+  │   ├── model/User.java
+  │   └── ...
+  ├── pom.xml
+  └── mvn spring-boot:run
+
+Frontend (React + Vite):
+  Investment Research Agent/
+  ├── src/routes/
+  │   ├── auth.tsx (Login/Signup)
+  │   ├── _app.tsx (Main layout)
+  │   ├── _app.screener.tsx (Stock filters)
+  │   ├── _app.settings.tsx (Settings)
+  │   ├── _app.dashboard.tsx
+  │   ├── _app.reports.tsx
+  │   ├── _app.ai.tsx
+  │   ├── _app.news.tsx
+  │   └── _app.alerts.tsx
+  ├── .env
+  ├── package.json
+  └── npm run dev
+
+
+================================================================================
+BUILD OUTPUTS
+================================================================================
+
+Frontend Build Output:
+  Investment Research Agent/dist/
+  ├── index.html
+  ├── assets/
+  │   ├── index-*.css (minified styles)
+  │   ├── index-*.js (minified JavaScript)
+  │   └── fonts/
+  └── Ready to deploy to any static host
+
+Backend Build Output:
+  springboot-backend/target/investment-research-api-1.0.0.jar
+  └── Ready to deploy to any Java host
+
+
+================================================================================
+API ENDPOINTS (Backend)
+================================================================================
+
+Authentication:
+  POST   /api/auth/register        - Create new account
+  POST   /api/auth/login           - Login with email/password
+  POST   /api/auth/refresh         - Refresh access token
+  GET    /api/auth/me              - Get current user profile
+  GET    /api/auth/health          - Check backend health
+
+Base URL: http://localhost:8080
+All requests (except login/register) require: Authorization: Bearer <token>
+
+
+================================================================================
+DEPLOYMENT CHECKLIST
+================================================================================
+
+Pre-Deployment:
+  ☐ Frontend builds without errors: npm run build
+  ☐ Backend builds without errors: mvn clean package
+  ☐ All tests pass (if applicable)
+  ☐ API keys are configured in .env
+  ☐ MongoDB connection string is valid
+  ☐ Environment variables are set
+
+Production Build:
+  ☐ Frontend: npm run build → dist/ ready
+  ☐ Backend: mvn clean package → .jar ready
+
+Deployment:
+  ☐ Deploy frontend dist/ to static host
+  ☐ Deploy backend .jar to Java host
+  ☐ Configure production environment variables
+  ☐ Point frontend VITE_API_BASE_URL to backend URL
+  ☐ Test login/screener/settings on production
+
+
+================================================================================
+SUPPORT
+================================================================================
+
+View logs:
+  Frontend: Terminal 2 (where npm run dev is running)
+  Backend: Terminal 1 (where mvn spring-boot:run is running)
+
+Browser console:
+  Press F12 → Console tab
+  Look for error messages
+
+Documentation:
+  - .kiro/QUICK_START_GUIDE.md
+  - .kiro/SCREENER_SETTINGS_FIX.md
+  - .kiro/AUTHENTICATION_COMPLETE.md
+  - .kiro/GLASSMORPHIC_AUTH_DESIGN.md
+
+Status:
+  ✅ Backend: Implemented & Tested
+  ✅ Frontend: Implemented & Tested
+  ✅ Database: Configured
+  ✅ API Keys: All configured
+  ✅ Build: Zero errors
+  ✅ Ready for deployment!
+
+================================================================================

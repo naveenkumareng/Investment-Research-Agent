@@ -1,0 +1,8 @@
+[build]
+nixpacks.files.base64EncodedFiles = []
+
+[[providers]]
+name = "maven"
+
+[env]
+MAVEN_OPTS = "-Xmx1024m"
