@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: investment-research-api
+    env: java
+    plan: free
+    buildCommand: cd springboot-backend && mvn clean package -DskipTests
+    startCommand: java -jar springboot-backend/target/investment-research-api-1.0.0.jar
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://investa2026:investor@2003@cluster0.mongodb.net/investa?retryWrites=true&w=majority
+      - key: JWT_SECRET
+        value: your-super-secret-key-minimum-256-bits-long-generate-a-random-string-here
+      - key: JWT_EXPIRATION
+        value: "86400000"
+      - key: SERVER_PORT
+        value: "10000"
+      - key: JAVA_OPTS
+        value: "-Xmx512m"
