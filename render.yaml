@@ -16,3 +16,16 @@ services:
         value: "10000"
       - key: JAVA_OPTS
         value: "-Xmx512m"
+
+  - type: web
+    name: investment-research-frontend
+    env: static
+    plan: free
+    buildCommand: cd "Investment Research Agent" && npm install && npm run build
+    staticPublishPath: "Investment Research Agent/dist"
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: investment-research-api
+          envVarKey: RENDER_EXTERNAL_URL

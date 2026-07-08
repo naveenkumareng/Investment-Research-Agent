@@ -71,25 +71,34 @@ export const getPortfolioHoldings = async (): Promise<Holding[]> => {
 };
 
 /**
- * Add a new holding to MongoDB
+ * Add a new holding to MongoDB via Transaction
  */
 export const addHolding = async (holding: Holding): Promise<Holding> => {
   try {
-    const response = await apiCall("POST", "/holdings", holding);
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+    // 1. Post to Transaction endpoint (bypass /portfolio base)
+    const userId = getUserId();
+    const { apiClient } = await import('@/lib/api-client');
+    
+    let created;
+    try {
+      const response = await apiClient.post(`/transactions/${userId}?symbol=${holding.symbol}&type=BUY&quantity=${holding.quantity}&price=${holding.avgPrice}&broker=${holding.broker || 'Investa'}`);
+      
+      // 2. Fetch updated holdings to return the exact created/updated holding
+      const all = await getPortfolioHoldings();
+      created = all.find(h => h.symbol === holding.symbol) || holding;
+    } catch (e) {
+      // Fallback if transaction endpoint isn't ready
+      const fallbackResponse = await apiCall("POST", "/holdings", holding);
+      if (!fallbackResponse.ok) throw new Error(`HTTP ${fallbackResponse.status}`);
+      created = await fallbackResponse.json();
     }
 
-    const created = await response.json();
-
     // Update localStorage backup
-    const all = await getPortfolioHoldings();
-    localStorage.setItem(FALLBACK_DB_KEY, JSON.stringify([created, ...all]));
+    localStorage.setItem(FALLBACK_DB_KEY, JSON.stringify(all));
 
     return created;
   } catch (error) {
-    console.warn("Failed to add holding to MongoDB, using localStorage fallback:", error);
+    console.warn("Failed to execute transaction in MongoDB, using localStorage fallback:", error);
 
     // Fallback to localStorage
     const all = await getPortfolioHoldings();

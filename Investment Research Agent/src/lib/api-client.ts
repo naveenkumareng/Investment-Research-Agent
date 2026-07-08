@@ -10,7 +10,7 @@ import axios, { type AxiosInstance } from "axios";
  * - CORS support for localhost
  */
 export const apiClient: AxiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: (import.meta.env.VITE_API_BASE_URL || "http://localhost:8080") + "/api",
   timeout: 15_000,
   headers: { "Content-Type": "application/json" },
 });
@@ -59,8 +59,9 @@ apiClient.interceptors.response.use(
             throw new Error("No refresh token available");
           }
 
+          const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
           const response = await axios.post(
-            "http://localhost:8080/api/auth/refresh",
+            `${baseURL}/api/auth/refresh`,
             { refreshToken },
             { headers: { "Content-Type": "application/json" } }
           );

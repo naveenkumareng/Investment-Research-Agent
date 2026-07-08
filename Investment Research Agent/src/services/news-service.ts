@@ -1,23 +1,32 @@
-import { MOCK_NEWS } from "./mock-data";
+import { apiClient } from "@/lib/api-client";
 import type { NewsArticle } from "@/types";
 
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-/**
- * TODO: Replace with Spring Boot endpoints:
- *   GET /api/news?category=...&q=...
- */
 export const newsService = {
   async list(category?: NewsArticle["category"] | "all", query?: string): Promise<NewsArticle[]> {
-    await delay(180);
-    let out = [...MOCK_NEWS];
-    if (category && category !== "all") out = out.filter((n) => n.category === category);
-    if (query) {
-      const q = query.toLowerCase();
-      out = out.filter(
-        (n) => n.title.toLowerCase().includes(q) || n.summary.toLowerCase().includes(q),
-      );
+    try {
+      let q = query || "finance OR market OR stocks";
+      if (category && category !== "all") {
+        q = `${category} AND (${q})`;
+      }
+      
+      const response = await apiClient.get(`/market/news`, {
+        params: { query: q }
+      });
+      
+      // Map backend DTO to frontend type
+      return (response.data?.articles || []).map((article: any, index: number) => ({
+        id: `news-${index}-${Date.now()}`,
+        title: article.title,
+        summary: article.description || "",
+        source: article.source?.name || "Unknown",
+        category: category !== "all" && category ? category : "finance",
+        imageUrl: article.urlToImage,
+        url: article.url,
+        publishedAt: article.publishedAt,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch news:", error);
+      return [];
     }
-    return out;
   },
 };

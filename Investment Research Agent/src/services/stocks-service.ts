@@ -29,9 +29,28 @@ export const stocksService = {
     );
   },
   async get(symbol: string): Promise<Stock> {
-    await delay(180);
     const found = MOCK_STOCKS.find((s) => s.symbol === symbol.toUpperCase());
     if (!found) throw new Error(`Stock ${symbol} not found`);
+
+    try {
+      const response = await import("@/lib/api-client").then(m => m.apiClient.get(`/market/quote/${symbol}`));
+      const quote = response.data;
+      if (quote) {
+        return {
+          ...found,
+          price: quote.currentPrice || found.price,
+          change: quote.change || found.change,
+          changePercent: quote.percentChange || found.changePercent,
+          open: quote.openPrice || found.open,
+          previousClose: quote.previousClose || found.previousClose,
+          dayHigh: quote.highPrice || found.dayHigh,
+          dayLow: quote.lowPrice || found.dayLow,
+        };
+      }
+    } catch (error) {
+      console.warn("Failed to fetch live quote, using mock data:", error);
+    }
+    
     return found;
   },
   async chart(symbol: string, range: TimeRange): Promise<PricePoint[]> {
