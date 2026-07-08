@@ -1,10 +1,9 @@
 services:
   - type: web
     name: investment-research-api
-    env: java
     plan: free
-    buildCommand: cd springboot-backend && mvn clean package -DskipTests
-    startCommand: java -jar springboot-backend/target/investment-research-api-1.0.0.jar
+    buildCommand: cd springboot-backend && mvn clean package -DskipTests && cp target/investment-research-api-1.0.0.jar ../
+    startCommand: java -jar investment-research-api-1.0.0.jar
     envVars:
       - key: MONGODB_URI
         value: mongodb+srv://investa2026:investor@2003@cluster0.mongodb.net/investa?retryWrites=true&w=majority
@@ -13,7 +12,7 @@ services:
       - key: JWT_EXPIRATION
         value: "86400000"
       - key: SERVER_PORT
-        value: "10000"
+        value: "8080"
       - key: JAVA_OPTS
         value: "-Xmx512m"
 

@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/investment-research-api-1.0.0.jar
+web: cd springboot-backend && mvn clean package -DskipTests && java -Xmx512m -jar target/investment-research-api-1.0.0.jar
