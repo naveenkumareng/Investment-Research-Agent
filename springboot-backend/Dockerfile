@@ -1,9 +1,9 @@
 # Multi-stage build
-FROM maven:3.9.6-eclipse-temurin-17-alpine as builder
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS builder
 WORKDIR /build
-COPY springboot-backend/pom.xml .
+COPY pom.xml .
 RUN mvn dependency:go-offline -q
-COPY springboot-backend/src ./src
+COPY src ./src
 RUN mvn clean package -DskipTests -q
 
 # Runtime stage
