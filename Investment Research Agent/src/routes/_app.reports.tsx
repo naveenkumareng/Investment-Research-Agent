@@ -50,7 +50,7 @@ function ReportsPage() {
 
   const download = (format: "pdf" | "csv", reportTitle: string) => {
     if (format === "csv") {
-      let csvContent = "data:text/csv;charset=utf-8,";
+      let csvContent = "";
       if (reportTitle.includes("Portfolio")) {
         csvContent += "Symbol,Quantity,Avg Price,Current Price,Invested,Current Value,P&L,P&L %\n";
         holdings.forEach((h) => {
@@ -60,18 +60,40 @@ function ReportsPage() {
         csvContent += "Report,Date,Status\n";
         csvContent += `${reportTitle},${new Date().toLocaleDateString()},Generated\n`;
       }
-      const encodedUri = encodeURI(csvContent);
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
+      link.href = url;
       link.setAttribute("download", `${reportTitle.toLowerCase().replace(/\s+/g, "_")}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
       toast.success(`${reportTitle} downloaded as CSV`);
     } else {
-      const printWindow = window.open("", "", "width=800,height=600");
-      if (printWindow) {
-        printWindow.document.write(`
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      const iframeDoc = iframe.contentWindow?.document;
+      if (iframeDoc) {
+        const tableHTML = reportTitle.includes("Portfolio")
+          ? `
+              <table>
+                <tr><th>Symbol</th><th>Quantity</th><th>Invested</th><th>Value</th><th>P&L</th></tr>
+                ${holdings
+            .map(
+              (h) =>
+                `<tr><td>${h.symbol}</td><td>${h.quantity}</td><td>$${h.invested.toFixed(2)}</td><td>$${h.currentValue.toFixed(2)}</td><td>$${h.pnl.toFixed(2)}</td></tr>`
+            )
+            .join("")}
+              </table>
+            `
+          : `<p>Detailed report data is not available for this type.</p>`;
+
+        iframeDoc.write(`
           <html>
             <head>
               <title>${reportTitle}</title>
@@ -87,34 +109,24 @@ function ReportsPage() {
             <body>
               <h1>${reportTitle}</h1>
               <p>Generated on ${new Date().toLocaleString()}</p>
-              ${
-                reportTitle.includes("Portfolio")
-                  ? \`
-                <table>
-                  <tr><th>Symbol</th><th>Quantity</th><th>Invested</th><th>Value</th><th>P&L</th></tr>
-                  \${holdings
-                    .map(
-                      (h) =>
-                        \`<tr><td>\${h.symbol}</td><td>\${h.quantity}</td><td>$\${h.invested.toFixed(2)}</td><td>$\${h.currentValue.toFixed(2)}</td><td>$\${h.pnl.toFixed(2)}</td></tr>\`
-                    )
-                    .join("")}
-                </table>
-              \`
-                  : "<p>Detailed report data is not available for this type.</p>"
-              }
+              ${tableHTML}
               <div class="footer">Investa Research Terminal</div>
             </body>
           </html>
         `);
-        printWindow.document.close();
-        printWindow.focus();
+        iframeDoc.close();
+
         setTimeout(() => {
-          printWindow.print();
-          printWindow.close();
-        }, 250);
-        toast.success(`${reportTitle} opened for printing/PDF save`);
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+          setTimeout(() => {
+            document.body.removeChild(iframe);
+          }, 1000);
+        }, 500);
+
+        toast.success(`${reportTitle} preparing for printing/PDF save`);
       } else {
-        toast.error("Please allow pop-ups to generate PDF");
+        toast.error("Failed to generate PDF");
       }
     }
   };
