@@ -1,1 +1,1 @@
-web: java -Xmx512m -jar springboot-backend/target/investment-research-api-1.0.0.jar
+web: java -Xmx512m -jar target/investment-research-api-1.0.0.jar

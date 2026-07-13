@@ -49,7 +49,74 @@ function ReportsPage() {
   const unrealized = value - invested;
 
   const download = (format: "pdf" | "csv", reportTitle: string) => {
-    toast.success(`${reportTitle} exported as ${format.toUpperCase()}`);
+    if (format === "csv") {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      if (reportTitle.includes("Portfolio")) {
+        csvContent += "Symbol,Quantity,Avg Price,Current Price,Invested,Current Value,P&L,P&L %\n";
+        holdings.forEach((h) => {
+          csvContent += `${h.symbol},${h.quantity},${h.avgPrice},${h.currentPrice},${h.invested},${h.currentValue},${h.pnl},${h.pnlPercent}\n`;
+        });
+      } else {
+        csvContent += "Report,Date,Status\n";
+        csvContent += `${reportTitle},${new Date().toLocaleDateString()},Generated\n`;
+      }
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `${reportTitle.toLowerCase().replace(/\s+/g, "_")}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success(`${reportTitle} downloaded as CSV`);
+    } else {
+      const printWindow = window.open("", "", "width=800,height=600");
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>${reportTitle}</title>
+              <style>
+                body { font-family: system-ui, sans-serif; padding: 40px; color: #111; }
+                h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+                th { background-color: #f9f9f9; }
+                .footer { margin-top: 40px; font-size: 12px; color: #666; }
+              </style>
+            </head>
+            <body>
+              <h1>${reportTitle}</h1>
+              <p>Generated on ${new Date().toLocaleString()}</p>
+              ${
+                reportTitle.includes("Portfolio")
+                  ? \`
+                <table>
+                  <tr><th>Symbol</th><th>Quantity</th><th>Invested</th><th>Value</th><th>P&L</th></tr>
+                  \${holdings
+                    .map(
+                      (h) =>
+                        \`<tr><td>\${h.symbol}</td><td>\${h.quantity}</td><td>$\${h.invested.toFixed(2)}</td><td>$\${h.currentValue.toFixed(2)}</td><td>$\${h.pnl.toFixed(2)}</td></tr>\`
+                    )
+                    .join("")}
+                </table>
+              \`
+                  : "<p>Detailed report data is not available for this type.</p>"
+              }
+              <div class="footer">Investa Research Terminal</div>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+          printWindow.close();
+        }, 250);
+        toast.success(`${reportTitle} opened for printing/PDF save`);
+      } else {
+        toast.error("Please allow pop-ups to generate PDF");
+      }
+    }
   };
 
   return (
